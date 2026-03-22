@@ -1,0 +1,9 @@
+django
+psycopg2-binary
+gunicorn
+whitenoise
+dj-database-url
+django-environ
+hypothesis
+pytest
+pytest-django
