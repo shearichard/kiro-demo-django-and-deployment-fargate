@@ -6,7 +6,7 @@ Implement a Django + PostgreSQL survey application with token-based participant 
 
 ## Tasks
 
-- [-] 1. Project scaffold and configuration
+- [x] 1. Project scaffold and configuration
   - Create the Django project (`django_survey`) and `survey` app using `django-admin startproject` / `manage.py startapp`
   - Add `requirements.txt` with `django`, `psycopg2-binary`, `gunicorn`, `whitenoise`, `dj-database-url`, `django-environ`, `hypothesis`, `pytest`, `pytest-django`
   - Configure `django_survey/settings.py` to read `SECRET_KEY`, `DATABASE_URL`, `DEBUG`, and `ALLOWED_HOSTS` from environment variables via `django-environ`
@@ -14,8 +14,8 @@ Implement a Django + PostgreSQL survey application with token-based participant 
   - Create `pytest.ini` with `DJANGO_SETTINGS_MODULE = django_survey.settings` and `conftest.py` with pytest-django setup
   - _Requirements: 6.3, 6.5, 7.1, 7.4_
 
-- [ ] 2. Data models
-  - [ ] 2.1 Implement `Survey`, `Question`, `AccessToken`, and `Response` models in `survey/models.py` exactly as specified in the design
+- [-] 2. Data models
+  - [x] 2.1 Implement `Survey`, `Question`, `AccessToken`, and `Response` models in `survey/models.py` exactly as specified in the design
     - Include `unique=True` on `Survey.name`, `CASCADE` deletes on all FK fields, `MinValueValidator`/`MaxValueValidator` on `Response.value`, and `unique_together` on `(question, access_token)`
     - Add `generate_token()` helper using `secrets.token_urlsafe(32)`
     - Create and run initial migration
@@ -160,7 +160,11 @@ Implement a Django + PostgreSQL survey application with token-based participant 
     - Map port 8000, pass all required environment variables, set `depends_on: db`
     - _Requirements: 6.1, 6.2, 6.3_
 
-  - [ ]* 9.4 Write unit tests for containerisation artefacts
+  - [ ] 9.4 Verify migrations run cleanly against Postgres on first `docker compose up`
+    - Note: migrations during Tasks 2–8 run against SQLite (no Postgres available locally). Once the Docker Compose stack is up, confirm `entrypoint.sh` applies all migrations successfully against the Postgres container on first startup.
+    - _Requirements: 7.2_
+
+  - [ ]* 9.5 Write unit tests for containerisation artefacts
     - Assert `docker-compose.yml` and `Dockerfile` exist at the repository root
     - Assert `settings.py` reads `DATABASE_URL` from environment
     - Assert `DEBUG=False` in environment results in `settings.DEBUG == False`
