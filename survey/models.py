@@ -1,11 +1,17 @@
 import secrets
 
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
 def generate_token():
     return secrets.token_urlsafe(32)  # 43 URL-safe chars, cryptographically random
+
+
+def validate_not_blank(value):
+    if not value or not value.strip():
+        raise ValidationError("This field cannot be blank or whitespace only.")
 
 
 class Survey(models.Model):
@@ -19,7 +25,7 @@ class Survey(models.Model):
 
 class Question(models.Model):
     survey = models.ForeignKey(Survey, on_delete=models.CASCADE, related_name='questions')
-    text = models.TextField()
+    text = models.TextField(validators=[validate_not_blank])
     order = models.PositiveIntegerField(default=0)
 
     class Meta:
