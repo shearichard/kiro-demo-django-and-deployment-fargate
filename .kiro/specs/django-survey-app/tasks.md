@@ -148,19 +148,19 @@ Implement a Django + PostgreSQL survey application with token-based participant 
     - Assert `results.html` wraps the table in a `table-responsive` div
     - _Requirements: 8.1, 8.5_
 
-- [ ] 9. Containerisation
-  - [ ] 9.1 Create `Dockerfile` as specified in the design
+- [x] 9. Containerisation
+  - [x] 9.1 Create `Dockerfile` as specified in the design
     - `FROM python:3.12-slim`, install dependencies, copy source, run `collectstatic`, expose 8000, set `ENTRYPOINT`
     - _Requirements: 6.4, 7.3_
 
-  - [ ] 9.2 Create `entrypoint.sh` that runs `migrate --noinput` then starts gunicorn
+  - [x] 9.2 Create `entrypoint.sh` that runs `migrate --noinput` then starts gunicorn
     - _Requirements: 7.2_
 
-  - [ ] 9.3 Create `docker-compose.yml` with `db` (postgres:16) and `web` services as specified in the design
+  - [x] 9.3 Create `docker-compose.yml` with `db` (postgres:16) and `web` services as specified in the design
     - Map port 8000, pass all required environment variables, set `depends_on: db`
     - _Requirements: 6.1, 6.2, 6.3_
 
-  - [ ] 9.4 Verify migrations run cleanly against Postgres on first `docker compose up`
+  - [x] 9.4 Verify migrations run cleanly against Postgres on first `docker compose up`
     - Note: migrations during Tasks 2–8 run against SQLite (no Postgres available locally). Once the Docker Compose stack is up, confirm `entrypoint.sh` applies all migrations successfully against the Postgres container on first startup.
     - _Requirements: 7.2_
 

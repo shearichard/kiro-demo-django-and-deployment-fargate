@@ -1,0 +1,22 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: survey
+      POSTGRES_USER: survey
+      POSTGRES_PASSWORD: survey
+    ports:
+      - "5432:5432"
+
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgres://survey:survey@db:5432/survey
+      SECRET_KEY: dev-secret-key
+      DEBUG: "True"
+      ALLOWED_HOSTS: "localhost,127.0.0.1"
+    depends_on:
+      - db
