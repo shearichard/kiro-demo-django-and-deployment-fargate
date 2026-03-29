@@ -170,7 +170,7 @@ Implement a Django + PostgreSQL survey application with token-based participant 
     - Assert `DEBUG=False` in environment results in `settings.DEBUG == False`
     - _Requirements: 6.1, 6.4, 6.5, 7.1, 7.4_
 
-- [ ] 10. Final checkpoint — Ensure all tests pass
+- [x] 10. Final checkpoint — Ensure all tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
