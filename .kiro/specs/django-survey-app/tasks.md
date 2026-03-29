@@ -14,131 +14,131 @@ Implement a Django + PostgreSQL survey application with token-based participant 
   - Create `pytest.ini` with `DJANGO_SETTINGS_MODULE = django_survey.settings` and `conftest.py` with pytest-django setup
   - _Requirements: 6.3, 6.5, 7.1, 7.4_
 
-- [-] 2. Data models
+- [x] 2. Data models
   - [x] 2.1 Implement `Survey`, `Question`, `AccessToken`, and `Response` models in `survey/models.py` exactly as specified in the design
     - Include `unique=True` on `Survey.name`, `CASCADE` deletes on all FK fields, `MinValueValidator`/`MaxValueValidator` on `Response.value`, and `unique_together` on `(question, access_token)`
     - Add `generate_token()` helper using `secrets.token_urlsafe(32)`
     - Create and run initial migration
     - _Requirements: 1.1, 1.5, 2.2, 2.3, 2.5, 3.2, 3.3_
 
-  - [ ]* 2.2 Write property test for Survey name uniqueness (Property 1)
+  - [x] 2.2 Write property test for Survey name uniqueness (Property 1)
     - **Property 1: Survey name uniqueness**
     - **Validates: Requirements 1.1**
 
-  - [ ]* 2.3 Write property test for Survey update round-trip (Property 2)
+  - [x] 2.3 Write property test for Survey update round-trip (Property 2)
     - **Property 2: Survey update round-trip**
     - **Validates: Requirements 1.2**
 
-  - [ ]* 2.4 Write property test for Survey cascade delete (Property 3)
+  - [x] 2.4 Write property test for Survey cascade delete (Property 3)
     - **Property 3: Survey cascade delete**
     - **Validates: Requirements 1.5**
 
-  - [ ]* 2.5 Write property test for Question blank text rejection (Property 4)
+  - [x] 2.5 Write property test for Question blank text rejection (Property 4)
     - **Property 4: Question blank text rejection**
     - **Validates: Requirements 2.2**
 
-  - [ ]* 2.6 Write property test for Response value range enforcement (Property 5)
+  - [x] 2.6 Write property test for Response value range enforcement (Property 5)
     - **Property 5: Response value range enforcement**
     - **Validates: Requirements 2.3, 4.7, 4.8**
 
-  - [ ]* 2.7 Write property test for Question cascade delete (Property 6)
+  - [x]* 2.7 Write property test for Question cascade delete (Property 6)
     - **Property 6: Question cascade delete**
     - **Validates: Requirements 2.5**
 
-  - [ ]* 2.8 Write property test for token length, URL-safety, and uniqueness (Property 7)
+  - [x]* 2.8 Write property test for token length, URL-safety, and uniqueness (Property 7)
     - **Property 7: Token length, URL-safety, and uniqueness**
     - **Validates: Requirements 3.2, 3.3, 3.5**
 
-- [ ] 3. Checkpoint — Ensure all model-level tests pass
+- [x] 3. Checkpoint — Ensure all model-level tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 4. Django admin registrations
-  - [ ] 4.1 Implement `survey/admin.py` with `SurveyAdmin` (inline `QuestionInline`), `AccessTokenAdmin`, and the `generate_tokens` bulk-create action
+- [x] 4. Django admin registrations
+  - [x] 4.1 Implement `survey/admin.py` with `SurveyAdmin` (inline `QuestionInline`), `AccessTokenAdmin`, and the `generate_tokens` bulk-create action
     - `SurveyAdmin`: list display with name, question count, token count; `QuestionInline` for adding/removing questions inline
     - `AccessTokenAdmin`: list display with survey, token preview, used status, created date; `generate_tokens` action that accepts a count and calls `AccessToken.objects.bulk_create`
     - _Requirements: 1.1, 1.2, 1.3, 2.1, 2.4, 3.1, 3.5_
 
-  - [ ]* 4.2 Write unit test for `generate_tokens` admin action
+  - [x] 4.2 Write unit test for `generate_tokens` admin action
     - Assert the action creates the requested number of tokens associated with the correct survey
     - _Requirements: 3.1, 3.5_
 
-- [ ] 5. Participant views and form
-  - [ ] 5.1 Implement `SurveyResponseForm` in `survey/forms.py`
+- [x] 5. Participant views and form
+  - [x] 5.1 Implement `SurveyResponseForm` in `survey/forms.py`
     - Dynamically build one `ChoiceField` (radio, choices 1–5) per question from the survey's question set
     - _Requirements: 2.3, 4.4, 4.7, 4.8_
 
-  - [ ] 5.2 Implement `SurveyView` (GET + POST) in `survey/views.py`
+  - [x] 5.2 Implement `SurveyView` (GET + POST) in `survey/views.py`
     - GET: look up `AccessToken` by token string (404 if missing), render `already_used.html` if `used=True`, otherwise render survey form
     - POST: validate form, save `Response` objects, mark token used, redirect to confirmation URL
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8_
 
-  - [ ] 5.3 Implement `ConfirmationView` in `survey/views.py`
+  - [x] 5.3 Implement `ConfirmationView` in `survey/views.py`
     - Renders `confirmation.html` for the given token
     - _Requirements: 4.6_
 
-  - [ ] 5.4 Wire URL patterns in `survey/urls.py` and include them in `django_survey/urls.py`
+  - [x] 5.4 Wire URL patterns in `survey/urls.py` and include them in `django_survey/urls.py`
     - `/survey/<str:token>/` → `SurveyView`
     - `/survey/<str:token>/done/` → `ConfirmationView`
     - `/survey/<str:token>/results/` → `ResultsView`
     - _Requirements: 3.4_
 
-  - [ ]* 5.5 Write property test for valid unused token GET (Property 8)
+  - [x] 5.5 Write property test for valid unused token GET (Property 8)
     - **Property 8: Valid unused token displays survey and all questions**
     - **Validates: Requirements 4.1**
 
-  - [ ]* 5.6 Write property test for used token GET (Property 9)
+  - [x] 5.6 Write property test for used token GET (Property 9)
     - **Property 9: Used token shows already-completed message**
     - **Validates: Requirements 4.2**
 
-  - [ ]* 5.7 Write property test for non-existent token 404 (Property 10)
+  - [x] 5.7 Write property test for non-existent token 404 (Property 10)
     - **Property 10: Non-existent token returns 404**
     - **Validates: Requirements 4.3**
 
-  - [ ]* 5.8 Write property test for valid partial submission (Property 11)
+  - [x] 5.8 Write property test for valid partial submission (Property 11)
     - **Property 11: Valid partial submission records responses and marks token used**
     - **Validates: Requirements 4.4, 4.5, 4.6**
 
-  - [ ]* 5.9 Write property test for out-of-range submission rejection (Property 12)
+  - [x] 5.9 Write property test for out-of-range submission rejection (Property 12)
     - **Property 12: Out-of-range submission is rejected**
     - **Validates: Requirements 4.8**
 
-- [ ] 6. Results view
-  - [ ] 6.1 Implement `ResultsView` in `survey/views.py`
+- [x] 6. Results view
+  - [x] 6.1 Implement `ResultsView` in `survey/views.py`
     - Decorate with `@login_required`
     - Aggregate `Response` counts using `values('question_id', 'value').annotate(count=Count('id'))` and build the `{question_id: {value: count}}` mapping from the design
     - Pass questions, result map, and total submission count to `results.html`
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
 
-  - [ ]* 6.2 Write unit test for results view authentication
+  - [x] 6.2 Write unit test for results view authentication
     - Assert unauthenticated request returns redirect/403
     - Assert authenticated staff request returns HTTP 200
     - _Requirements: 5.1_
 
-  - [ ]* 6.3 Write property test for results counts accuracy (Property 13)
+  - [x] 6.3 Write property test for results counts accuracy (Property 13)
     - **Property 13: Results counts accuracy**
     - **Validates: Requirements 5.2, 5.3, 5.4**
 
-- [ ] 7. Checkpoint — Ensure all view and results tests pass
+- [x] 7. Checkpoint — Ensure all view and results tests pass
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 8. Templates and responsive UI
-  - [ ] 8.1 Create `survey/templates/survey/base.html` with Bootstrap 5 CDN link and responsive viewport meta tag
+- [x] 8. Templates and responsive UI
+  - [x] 8.1 Create `survey/templates/survey/base.html` with Bootstrap 5 CDN link and responsive viewport meta tag
     - _Requirements: 8.1_
 
-  - [ ] 8.2 Create `survey_form.html` extending `base.html`
+  - [x] 8.2 Create `survey_form.html` extending `base.html`
     - Render each question as a `<fieldset>` with five `form-check-inline` radio buttons (values 1–5)
     - Use Bootstrap grid (`col-12 col-md-*`) so the layout reflows at 320px without horizontal scrolling
     - _Requirements: 4.1, 8.2, 8.4_
 
-  - [ ] 8.3 Create `already_used.html` extending `base.html`
+  - [x] 8.3 Create `already_used.html` extending `base.html`
     - Display a clear message that the survey has already been completed; no form element
     - _Requirements: 4.2_
 
-  - [ ] 8.4 Create `confirmation.html` extending `base.html`
+  - [x] 8.4 Create `confirmation.html` extending `base.html`
     - Display a submission-received confirmation message
     - _Requirements: 4.6_
 
-  - [ ] 8.5 Create `results.html` extending `base.html`
+  - [x] 8.5 Create `results.html` extending `base.html`
     - Render a table of question × value counts wrapped in a `table-responsive` div
     - Display total submission count
     - _Requirements: 5.2, 5.3, 5.5, 8.3, 8.5_
