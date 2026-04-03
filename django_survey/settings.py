@@ -59,7 +59,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'django_survey.wsgi.application'
 
 DATABASES = {
-    'default': env.db('DATABASE_URL', default=f'sqlite:///{BASE_DIR / "db.sqlite3"}'),
+    'default': {
+        **env.db('DATABASE_URL', default=f'sqlite:///{BASE_DIR / "db.sqlite3"}'),
+        'CONN_MAX_AGE': env.int('CONN_MAX_AGE', default=60),
+    }
 }
 
 AUTH_PASSWORD_VALIDATORS = [
