@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
@@ -105,3 +106,8 @@ def results_view(request, token):
         "rows": rows,
         "total_submissions": total_submissions,
     })
+
+
+def health_check(request):
+    """ALB health check endpoint. Returns 200 OK when the app is running."""
+    return JsonResponse({"status": "ok"})
