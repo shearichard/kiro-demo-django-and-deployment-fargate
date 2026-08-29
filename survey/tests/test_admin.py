@@ -13,8 +13,8 @@ from survey.models import AccessToken, Survey
 
 
 @pytest.fixture
-def survey(db):
-    return Survey.objects.create(name="Admin Test Survey")
+def survey(db, admin_user):
+    return Survey.objects.create(name="Admin Test Survey", owner=admin_user)
 
 
 @pytest.fixture
@@ -47,7 +47,7 @@ def test_generate_tokens_creates_correct_count(survey, admin_user):
 @pytest.mark.django_db
 def test_generate_tokens_associates_correct_survey(survey, admin_user):
     """All tokens created by generate_tokens belong to the selected survey. (Req 3.1)"""
-    other_survey = Survey.objects.create(name="Other Survey")
+    other_survey = Survey.objects.create(name="Other Survey", owner=admin_user)
     count = 5
     request = make_request(RequestFactory(), admin_user, count)
 
@@ -62,8 +62,8 @@ def test_generate_tokens_associates_correct_survey(survey, admin_user):
 @pytest.mark.django_db
 def test_generate_tokens_multiple_surveys(admin_user):
     """generate_tokens creates tokens for each survey in the queryset. (Req 3.5)"""
-    s1 = Survey.objects.create(name="Survey One")
-    s2 = Survey.objects.create(name="Survey Two")
+    s1 = Survey.objects.create(name="Survey One", owner=admin_user)
+    s2 = Survey.objects.create(name="Survey Two", owner=admin_user)
     count = 3
     request = make_request(RequestFactory(), admin_user, count)
 

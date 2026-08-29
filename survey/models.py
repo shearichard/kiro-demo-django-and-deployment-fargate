@@ -1,5 +1,6 @@
 import secrets
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -15,6 +16,11 @@ def validate_not_blank(value):
 
 
 class Survey(models.Model):
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='surveys',
+    )
     name = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

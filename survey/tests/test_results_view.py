@@ -9,8 +9,8 @@ from survey.models import AccessToken, Survey
 
 
 @pytest.fixture
-def survey_with_token(db):
-    survey = Survey.objects.create(name="Results Auth Test Survey")
+def survey_with_token(db, staff_user):
+    survey = Survey.objects.create(name="Results Auth Test Survey", owner=staff_user)
     token = AccessToken.objects.create(survey=survey)
     return survey, token
 

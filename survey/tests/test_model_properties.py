@@ -3,8 +3,10 @@ Property-based tests for survey data models.
 Uses Hypothesis + pytest-django.
 """
 import re
+import uuid
 
 import pytest
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, transaction
 from hypothesis import given, settings
@@ -17,8 +19,16 @@ from survey.models import AccessToken, Question, Response, Survey, generate_toke
 # Helpers
 # ---------------------------------------------------------------------------
 
-def make_survey(name="Test Survey"):
-    return Survey.objects.create(name=name)
+def get_owner():
+    """Return a shared owner user, creating it once if needed."""
+    owner, _ = User.objects.get_or_create(
+        username="prop-test-owner", defaults={"password": "x"}
+    )
+    return owner
+
+
+def make_survey(name="Test Survey", owner=None):
+    return Survey.objects.create(name=name, owner=owner or get_owner())
 
 
 def make_question(survey, text="Rate this", order=0):
@@ -41,10 +51,10 @@ def make_token(survey):
 def test_survey_name_uniqueness(name):
     """Two surveys with the same name: second creation must be rejected."""
     Survey.objects.all().delete()
-    Survey.objects.create(name=name)
+    Survey.objects.create(name=name, owner=get_owner())
     with pytest.raises(IntegrityError):
         with transaction.atomic():
-            Survey.objects.create(name=name)
+            Survey.objects.create(name=name, owner=get_owner())
 
 
 # ---------------------------------------------------------------------------
@@ -63,7 +73,7 @@ def test_survey_name_uniqueness(name):
 def test_survey_update_round_trip(original_name, new_name, new_desc):
     """Updating name/description and reading back returns exactly what was written."""
     Survey.objects.all().delete()
-    survey = Survey.objects.create(name=original_name)
+    survey = Survey.objects.create(name=original_name, owner=get_owner())
     survey.name = new_name
     survey.description = new_desc
     survey.save()
@@ -84,7 +94,7 @@ def test_survey_update_round_trip(original_name, new_name, new_desc):
 @settings(max_examples=100)
 def test_survey_cascade_delete(n):
     """Deleting a survey removes all its questions, tokens, and responses."""
-    survey = Survey.objects.create(name=f"cascade-survey-{n}-{id(n)}")
+    survey = Survey.objects.create(name=f"cascade-survey-{n}-{id(n)}", owner=get_owner())
     token = make_token(survey)
     for i in range(n):
         q = make_question(survey, text=f"Q{i}", order=i)
@@ -110,7 +120,7 @@ def test_survey_cascade_delete(n):
 def test_question_blank_text_rejected(blank_text):
     """Questions with empty or whitespace-only text must fail validation."""
     import uuid
-    survey = Survey.objects.create(name=f"blank-{uuid.uuid4()}")
+    survey = Survey.objects.create(name=f"blank-{uuid.uuid4()}", owner=get_owner())
     q = Question(survey=survey, text=blank_text)
     with pytest.raises(ValidationError):
         q.full_clean()
@@ -129,7 +139,7 @@ def test_question_blank_text_rejected(blank_text):
 @settings(max_examples=200)
 def test_out_of_range_response_rejected(value):
     """Response values outside [1, 5] must be rejected by model validation."""
-    survey = Survey.objects.create(name=f"range-out-{value}")
+    survey = Survey.objects.create(name=f"range-out-{value}", owner=get_owner())
     token = AccessToken.objects.create(survey=survey)
     q = Question.objects.create(survey=survey, text="Rate this")
     r = Response(question=q, access_token=token, value=value)
@@ -230,7 +240,7 @@ def test_valid_unused_token_get_displays_survey_and_questions(survey_name, quest
     # Use unique survey name to avoid IntegrityError across examples
     unique_name = f"{survey_name[:100]}-{uuid.uuid4()}"
 
-    survey = Survey.objects.create(name=unique_name)
+    survey = Survey.objects.create(name=unique_name, owner=get_owner())
     for i, text in enumerate(question_texts):
         Question.objects.create(survey=survey, text=text, order=i)
     access_token = AccessToken.objects.create(survey=survey, used=False)
@@ -268,7 +278,7 @@ def test_used_token_get_shows_already_completed(survey_name, question_texts):
     # Use unique survey name to avoid IntegrityError across examples
     unique_name = f"{survey_name[:100]}-{uuid.uuid4()}"
 
-    survey = Survey.objects.create(name=unique_name)
+    survey = Survey.objects.create(name=unique_name, owner=get_owner())
     for i, text in enumerate(question_texts):
         Question.objects.create(survey=survey, text=text, order=i)
     access_token = AccessToken.objects.create(survey=survey, used=True)
@@ -343,7 +353,7 @@ def test_valid_partial_submission_records_responses_and_marks_token_used(
     from django.test import Client
 
     unique_name = f"partial-sub-{uuid.uuid4()}"
-    survey = Survey.objects.create(name=unique_name)
+    survey = Survey.objects.create(name=unique_name, owner=get_owner())
 
     questions = []
     for i in range(num_questions):
@@ -407,7 +417,7 @@ def test_empty_submission_succeeds():
     from django.urls import reverse
 
     unique_name = f"empty-sub-{uuid.uuid4()}"
-    survey = Survey.objects.create(name=unique_name)
+    survey = Survey.objects.create(name=unique_name, owner=get_owner())
     for i in range(3):
         Question.objects.create(survey=survey, text=f"Question {i}", order=i)
 
@@ -448,7 +458,7 @@ def test_out_of_range_submission_rejected(num_questions, out_of_range_value):
     from django.test import Client
 
     unique_name = f"oor-sub-{uuid.uuid4()}"
-    survey = Survey.objects.create(name=unique_name)
+    survey = Survey.objects.create(name=unique_name, owner=get_owner())
 
     questions = []
     for i in range(num_questions):
@@ -514,7 +524,7 @@ def test_results_counts_accuracy(num_questions, submissions):
     from django.test import Client
 
     unique_name = f"results-counts-{uuid.uuid4()}"
-    survey = Survey.objects.create(name=unique_name)
+    survey = Survey.objects.create(name=unique_name, owner=get_owner())
 
     questions = []
     for i in range(num_questions):
