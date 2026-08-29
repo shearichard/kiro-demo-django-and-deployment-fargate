@@ -1,0 +1,37 @@
+{% extends "survey/base.html" %}
+{% block title %}Add Question — {{ survey.name }}{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-md-8 col-lg-6">
+    <h1 class="h3 mb-1">Add Question</h1>
+    <p class="text-muted mb-4">Survey: {{ survey.name }}</p>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      <div class="mb-3">
+        <label for="{{ form.text.id_for_label }}" class="form-label fw-semibold">Question text</label>
+        <textarea name="{{ form.text.html_name }}"
+                  id="{{ form.text.id_for_label }}"
+                  class="form-control {% if form.text.errors %}is-invalid{% endif %}"
+                  rows="3">{{ form.text.value|default:'' }}</textarea>
+        {% for error in form.text.errors %}
+        <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+      </div>
+      <div class="mb-3">
+        <label for="{{ form.order.id_for_label }}" class="form-label fw-semibold">Order</label>
+        <input type="number" name="{{ form.order.html_name }}"
+               id="{{ form.order.id_for_label }}"
+               class="form-control {% if form.order.errors %}is-invalid{% endif %}"
+               value="{{ form.order.value|default:'0' }}" min="0">
+        {% for error in form.order.errors %}
+        <div class="invalid-feedback">{{ error }}</div>
+        {% endfor %}
+      </div>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary">Add Question</button>
+        <a href="{% url 'manage:survey_detail' survey.pk %}" class="btn btn-outline-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

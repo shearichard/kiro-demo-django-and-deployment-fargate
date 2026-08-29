@@ -16,3 +16,28 @@ class SurveyResponseForm(forms.Form):
                 widget=forms.RadioSelect,
                 required=False,
             )
+
+
+from survey.models import Question, Survey
+
+
+class SurveyForm(forms.ModelForm):
+    """Form for creating and editing a Survey (name + description)."""
+
+    class Meta:
+        model = Survey
+        fields = ['name', 'description']
+
+    def clean_name(self):
+        name = self.cleaned_data.get('name', '')
+        if not name or not name.strip():
+            raise forms.ValidationError("Survey name cannot be blank or whitespace only.")
+        return name
+
+
+class QuestionForm(forms.ModelForm):
+    """Form for adding a Question to a Survey."""
+
+    class Meta:
+        model = Question
+        fields = ['text', 'order']

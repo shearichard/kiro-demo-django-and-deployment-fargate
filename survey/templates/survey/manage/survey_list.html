@@ -1,0 +1,40 @@
+{% extends "survey/base.html" %}
+{% block title %}My Surveys{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3">My Surveys</h1>
+  <a href="{% url 'manage:survey_create' %}" class="btn btn-primary">New Survey</a>
+</div>
+
+{% if surveys %}
+<div class="table-responsive">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Tokens Issued</th>
+        <th>Tokens Used</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for survey in surveys %}
+      <tr>
+        <td><a href="{% url 'manage:survey_detail' survey.pk %}">{{ survey.name }}</a></td>
+        <td>{{ survey.token_count }}</td>
+        <td>{{ survey.used_token_count }}</td>
+        <td>
+          <a href="{% url 'manage:survey_detail' survey.pk %}" class="btn btn-sm btn-outline-secondary">View</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="text-center text-muted py-5">
+  <p class="mb-3">You haven't created any surveys yet.</p>
+  <a href="{% url 'manage:survey_create' %}" class="btn btn-primary">Create your first survey</a>
+</div>
+{% endif %}
+{% endblock %}

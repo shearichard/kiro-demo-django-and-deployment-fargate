@@ -29,13 +29,13 @@ Extend the Django survey app with an authenticated management UI. Adds an `owner
     - **Validates: Requirements 1.3**
     - Tag: `# Feature: survey-user-management, Property 2: Owner cascade delete removes surveys`
 
-- [ ] 2. Add `SurveyForm` and `QuestionForm` to `survey/forms.py`
-  - [ ] 2.1 Implement `SurveyForm` ModelForm
+- [x] 2. Add `SurveyForm` and `QuestionForm` to `survey/forms.py`
+  - [x] 2.1 Implement `SurveyForm` ModelForm
     - Add `SurveyForm(forms.ModelForm)` for `Survey` with fields `name`, `description`
     - Apply `validate_not_blank` as a validator on the `name` field via `clean_name()`
     - _Requirements: 2.3, 2.4_
 
-  - [ ] 2.2 Implement `QuestionForm` ModelForm
+  - [x] 2.2 Implement `QuestionForm` ModelForm
     - Add `QuestionForm(forms.ModelForm)` for `Question` with field `text`
     - Model-level `validate_not_blank` on `Question.text` already handles blank rejection
     - _Requirements: 3.3_
@@ -64,7 +64,7 @@ Extend the Django survey app with an authenticated management UI. Adds an `owner
 - [ ] 3. Checkpoint — Ensure all tests pass
   - Run `.venv/bin/pytest survey/tests/test_manage_forms.py` and ensure all pass; ask the user if questions arise.
 
-- [ ] 4. Create `survey/manage_views.py` with all five management views
+- [-] 4. Create `survey/manage_views.py` with all five management views
   - [ ] 4.1 Implement `survey_list_view`
     - Filter surveys by `owner=request.user`; annotate each with `token_count` and `used_token_count` via `Count` and conditional aggregation
     - Render `survey/manage/survey_list.html`
@@ -88,54 +88,54 @@ Extend the Django survey app with an authenticated management UI. Adds an `owner
     - Render `survey/manage/token_created.html` with the new token value
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
 
-- [ ] 5. Create `survey/manage_urls.py` and wire into `django_survey/urls.py`
-  - [ ] 5.1 Create `survey/manage_urls.py` with all five URL patterns and `app_name = 'manage'`
+- [-] 5. Create `survey/manage_urls.py` and wire into `django_survey/urls.py`
+  - [x] 5.1 Create `survey/manage_urls.py` with all five URL patterns and `app_name = 'manage'`
     - Patterns: `surveys/`, `surveys/new/`, `surveys/<int:pk>/`, `surveys/<int:pk>/questions/add/`, `surveys/<int:pk>/tokens/create/`
     - _Requirements: 2.2, 3.2, 4.2, 5.2, 6.2_
 
-  - [ ] 5.2 Include `manage_urls.py` in `django_survey/urls.py` under `/survey/manage/`
+  - [x] 5.2 Include `manage_urls.py` in `django_survey/urls.py` under `/survey/manage/`
     - Add `path('survey/manage/', include('survey.manage_urls'))` before the existing `survey/` include
     - _Requirements: all management URL requirements_
 
 - [ ] 6. Create management templates
-  - [ ] 6.1 Create `survey/templates/survey/manage/survey_list.html`
+  - [x] 6.1 Create `survey/templates/survey/manage/survey_list.html`
     - Extend `base.html`; show table of owned surveys with name, token_count, used_token_count; empty-state message when list is empty; link to create page
     - _Requirements: 4.1, 4.3, 4.4, 4.5_
 
-  - [ ] 6.2 Create `survey/templates/survey/manage/survey_create.html`
+  - [x] 6.2 Create `survey/templates/survey/manage/survey_create.html`
     - Extend `base.html`; render `SurveyForm` with Bootstrap 5 form classes and CSRF token
     - _Requirements: 2.1, 2.3_
 
-  - [ ] 6.3 Create `survey/templates/survey/manage/survey_detail.html`
+  - [x] 6.3 Create `survey/templates/survey/manage/survey_detail.html`
     - Extend `base.html`; display survey name, description, ordered question list, and a POST button/form to issue a new token
     - _Requirements: 6.1, 6.4_
 
-  - [ ] 6.4 Create `survey/templates/survey/manage/question_add.html`
+  - [x] 6.4 Create `survey/templates/survey/manage/question_add.html`
     - Extend `base.html`; render `QuestionForm` with Bootstrap 5 classes and CSRF token
     - _Requirements: 3.1, 3.3_
 
-  - [ ] 6.5 Create `survey/templates/survey/manage/token_created.html`
+  - [x] 6.5 Create `survey/templates/survey/manage/token_created.html`
     - Extend `base.html`; display the full token value prominently and a link back to the survey detail page
     - _Requirements: 5.4_
 
-- [ ] 7. Write unit tests for management views in `survey/tests/test_manage_views.py`
-  - [ ] 7.1 Write unit tests for `survey_list_view`
+- [x] 7. Write unit tests for management views in `survey/tests/test_manage_views.py`
+  - [x] 7.1 Write unit tests for `survey_list_view`
     - Authenticated owner sees own surveys; unauthenticated user is redirected; other user's surveys are hidden; token counts are correct; empty-state renders
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-  - [ ] 7.2 Write unit tests for `survey_create_view`
+  - [x] 7.2 Write unit tests for `survey_create_view`
     - Valid POST creates survey and redirects; unauthenticated redirects to login; blank name rejected; duplicate name rejected
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-  - [ ] 7.3 Write unit tests for `survey_detail_view`
+  - [x] 7.3 Write unit tests for `survey_detail_view`
     - Owner sees questions and token-issue control; unauthenticated redirects; non-owner gets 403; 404 on unknown pk
     - _Requirements: 6.1, 6.2, 6.3_
 
-  - [ ] 7.4 Write unit tests for `question_add_view`
+  - [x] 7.4 Write unit tests for `question_add_view`
     - Owner POST adds question and redirects; unauthenticated redirects; non-owner gets 403; blank text rejected
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5_
 
-  - [ ] 7.5 Write unit tests for `token_create_view`
+  - [x] 7.5 Write unit tests for `token_create_view`
     - Owner POST creates token and displays value; unauthenticated redirects; non-owner gets 403; token value shown in response
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
 

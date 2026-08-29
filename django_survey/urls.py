@@ -21,6 +21,7 @@ from survey.views import health_check
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('survey/manage/', include('survey.manage_urls')),
     path('survey/', include('survey.urls')),
     path('health/', health_check, name='health_check'),
 ]
