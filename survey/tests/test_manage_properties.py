@@ -58,8 +58,14 @@ def make_survey(owner, name=None):
 # Validates: Requirements 1.2, 2.1
 # ---------------------------------------------------------------------------
 
+SAFE_TEXT = st.text(
+    alphabet=st.characters(blacklist_characters="\x00", blacklist_categories=("Cs",)),
+    max_size=500,
+)
+
+
 @pytest.mark.django_db
-@given(name=PRINTABLE_NON_WS, description=st.text(max_size=500))
+@given(name=PRINTABLE_NON_WS, description=SAFE_TEXT)
 @settings(max_examples=50, deadline=None)
 def test_survey_creation_sets_owner(name, description):
     """

@@ -193,7 +193,7 @@ Extend the Django survey app with an authenticated management UI. Adds an `owner
     - **Property 11: Non-owner cannot view survey detail (403)**
     - **Validates: Requirements 6.3**
 
-- [ ] 10. Final checkpoint — Ensure all tests pass
+- [-] 10. Final checkpoint — Ensure all tests pass
   - Run `.venv/bin/pytest survey/tests/` and ensure all pass; ask the user if questions arise.
 
 ## Notes
