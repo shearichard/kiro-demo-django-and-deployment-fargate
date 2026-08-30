@@ -64,31 +64,31 @@ Extend the Django survey app with an authenticated management UI. Adds an `owner
 - [ ] 3. Checkpoint — Ensure all tests pass
   - Run `.venv/bin/pytest survey/tests/test_manage_forms.py` and ensure all pass; ask the user if questions arise.
 
-- [-] 4. Create `survey/manage_views.py` with all five management views
-  - [ ] 4.1 Implement `survey_list_view`
+- [x] 4. Create `survey/manage_views.py` with all five management views
+  - [x] 4.1 Implement `survey_list_view`
     - Filter surveys by `owner=request.user`; annotate each with `token_count` and `used_token_count` via `Count` and conditional aggregation
     - Render `survey/manage/survey_list.html`
     - _Requirements: 4.1, 4.3, 4.4, 4.5_
 
-  - [ ] 4.2 Implement `survey_create_view`
+  - [x] 4.2 Implement `survey_create_view`
     - On GET render empty `SurveyForm`; on valid POST set `survey.owner = request.user`, save, redirect to `manage:survey_detail`
     - _Requirements: 2.1, 2.2, 2.5_
 
-  - [ ] 4.3 Implement `survey_detail_view`
+  - [x] 4.3 Implement `survey_detail_view`
     - `get_object_or_404(Survey, pk=pk)`; return 403 if `survey.owner != request.user`
     - Pass survey and its questions to `survey/manage/survey_detail.html`
     - _Requirements: 6.1, 6.2, 6.3, 6.4_
 
-  - [ ] 4.4 Implement `question_add_view`
+  - [x] 4.4 Implement `question_add_view`
     - Ownership check → 403; on valid POST create `Question` linked to survey, redirect to `manage:survey_detail`
     - _Requirements: 3.1, 3.2, 3.4, 3.5_
 
-  - [ ] 4.5 Implement `token_create_view`
+  - [x] 4.5 Implement `token_create_view`
     - Ownership check → 403; on POST create `AccessToken` (default `generate_token()` fires automatically)
     - Render `survey/manage/token_created.html` with the new token value
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
 
-- [-] 5. Create `survey/manage_urls.py` and wire into `django_survey/urls.py`
+- [x] 5. Create `survey/manage_urls.py` and wire into `django_survey/urls.py`
   - [x] 5.1 Create `survey/manage_urls.py` with all five URL patterns and `app_name = 'manage'`
     - Patterns: `surveys/`, `surveys/new/`, `surveys/<int:pk>/`, `surveys/<int:pk>/questions/add/`, `surveys/<int:pk>/tokens/create/`
     - _Requirements: 2.2, 3.2, 4.2, 5.2, 6.2_
@@ -97,7 +97,7 @@ Extend the Django survey app with an authenticated management UI. Adds an `owner
     - Add `path('survey/manage/', include('survey.manage_urls'))` before the existing `survey/` include
     - _Requirements: all management URL requirements_
 
-- [ ] 6. Create management templates
+- [x] 6. Create management templates
   - [x] 6.1 Create `survey/templates/survey/manage/survey_list.html`
     - Extend `base.html`; show table of owned surveys with name, token_count, used_token_count; empty-state message when list is empty; link to create page
     - _Requirements: 4.1, 4.3, 4.4, 4.5_
@@ -139,57 +139,57 @@ Extend the Django survey app with an authenticated management UI. Adds an `owner
     - Owner POST creates token and displays value; unauthenticated redirects; non-owner gets 403; token value shown in response
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
 
-- [ ] 8. Checkpoint — Ensure all tests pass
+- [x] 8. Checkpoint — Ensure all tests pass
   - Run `.venv/bin/pytest survey/tests/test_manage_views.py survey/tests/test_manage_forms.py` and ensure all pass; ask the user if questions arise.
 
-- [ ] 9. Write property-based tests in `survey/tests/test_manage_properties.py`
-  - [ ]* 9.1 Write property test for survey creation sets owner (Property 1)
+- [x] 9. Write property-based tests in `survey/tests/test_manage_properties.py`
+  - [x]* 9.1 Write property test for survey creation sets owner (Property 1)
     - **Property 1: Survey creation sets owner to current user**
     - **Validates: Requirements 1.2, 2.1**
     - Tag: `# Feature: survey-user-management, Property 1: Survey creation sets owner to current user`
 
-  - [ ]* 9.2 Write property test for owner cascade delete (Property 2)
+  - [x]* 9.2 Write property test for owner cascade delete (Property 2)
     - **Property 2: Owner cascade delete removes surveys**
     - **Validates: Requirements 1.3**
     - (Move here if not already written in task 1.4)
 
-  - [ ]* 9.3 Write property test for whitespace survey name rejection (Property 3)
+  - [x]* 9.3 Write property test for whitespace survey name rejection (Property 3)
     - **Property 3: Whitespace-only name is rejected**
     - **Validates: Requirements 2.3**
     - (Move here if not already written in task 2.5)
 
-  - [ ]* 9.4 Write property test for duplicate survey name rejection (Property 4)
+  - [x]* 9.4 Write property test for duplicate survey name rejection (Property 4)
     - **Property 4: Duplicate survey name is rejected**
     - **Validates: Requirements 2.4**
 
-  - [ ]* 9.5 Write property test for whitespace question text rejection (Property 5)
+  - [x]* 9.5 Write property test for whitespace question text rejection (Property 5)
     - **Property 5: Whitespace-only question text is rejected**
     - **Validates: Requirements 3.3**
 
-  - [ ]* 9.6 Write property test for non-owner add-question returns 403 (Property 6)
+  - [x]* 9.6 Write property test for non-owner add-question returns 403 (Property 6)
     - **Property 6: Non-owner cannot add question (403)**
     - **Validates: Requirements 3.4**
 
-  - [ ]* 9.7 Write property test for survey list scoped to current user (Property 7)
+  - [x]* 9.7 Write property test for survey list scoped to current user (Property 7)
     - **Property 7: Survey list is scoped to current user**
     - **Validates: Requirements 4.1**
     - Use `st.integers(min_value=1, max_value=10)` for survey counts per user
 
-  - [ ]* 9.8 Write property test for token statistics accuracy (Property 8)
+  - [x]* 9.8 Write property test for token statistics accuracy (Property 8)
     - **Property 8: Token statistics are accurate per survey**
     - **Validates: Requirements 4.3, 4.4**
     - Use `st.integers(min_value=0, max_value=50)` for token counts
 
-  - [ ]* 9.9 Write property test for non-owner token create returns 403 (Property 9)
+  - [x]* 9.9 Write property test for non-owner token create returns 403 (Property 9)
     - **Property 9: Non-owner cannot create token (403)**
     - **Validates: Requirements 5.3**
 
-  - [ ]* 9.10 Write property test for generated token URL-safety and length (Property 10)
+  - [x]* 9.10 Write property test for generated token URL-safety and length (Property 10)
     - **Property 10: Generated tokens are URL-safe and at least 32 characters**
     - **Validates: Requirements 5.5**
     - Note: `generate_token()` already tested in `test_model_properties.py`; verify or consolidate
 
-  - [ ]* 9.11 Write property test for non-owner detail view returns 403 (Property 11)
+  - [x]* 9.11 Write property test for non-owner detail view returns 403 (Property 11)
     - **Property 11: Non-owner cannot view survey detail (403)**
     - **Validates: Requirements 6.3**
 
